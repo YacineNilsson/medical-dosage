@@ -1,7 +1,43 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Picker } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Picker,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
 const DosageForm = () => {
+  const styles = StyleSheet.create({
+    textInput: {
+      borderWidth: 1,
+      borderColor: "#ccc",
+      borderRadius: 8,
+      padding: 10,
+      marginBottom: 15,
+      fontSize: 16,
+    },
+    label: {
+      fontSize: 16,
+      marginBottom: 5,
+      fontWeight: "bold",
+    },
+    button: {
+      backgroundColor: "#4CAF50",
+      padding: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      marginTop: 20,
+    },
+    buttonText: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  });
+
   const [medicine, setMedicine] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
@@ -16,7 +52,7 @@ const DosageForm = () => {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text>Välj medicin:</Text>
+      <Text style={styles.label}>Välj medicin:</Text>
       <Picker
         selectedValue={medicine}
         onValueChange={(itemValue) => setMedicine(itemValue)}
@@ -27,31 +63,31 @@ const DosageForm = () => {
         {/* Lägg till fler mediciner */}
       </Picker>
 
-      <Text>Skriv in vikt (kg):</Text>
+      <Text style={styles.label}>Skriv in vikt (kg):</Text>
       <TextInput
         keyboardType="numeric"
         value={weight}
         onChangeText={setWeight}
-        style={{ borderWidth: 1, marginBottom: 10 }}
+        style={styles.textInput}
       />
 
-      <Text>Skriv in längd (cm):</Text>
+      <Text style={styles.label}>Skriv in längd (cm):</Text>
       <TextInput
         keyboardType="numeric"
         value={height}
         onChangeText={setHeight}
-        style={{ borderWidth: 1, marginBottom: 10 }}
+        style={styles.textInput}
       />
 
-      <Text>Skriv in ålder (år):</Text>
+      <Text style={styles.label}>Skriv in ålder (år):</Text>
       <TextInput
         keyboardType="numeric"
         value={age}
         onChangeText={setAge}
-        style={{ borderWidth: 1, marginBottom: 10 }}
+        style={styles.textInput}
       />
 
-      <Text>Välj kön:</Text>
+      <Text style={styles.label}>Välj kön:</Text>
       <Picker
         selectedValue={gender}
         onValueChange={(itemValue) => setGender(itemValue)}
@@ -61,7 +97,9 @@ const DosageForm = () => {
         <Picker.Item label="Flicka" value="female" />
       </Picker>
 
-      <Button title="Beräkna dos" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Beräkna dos</Text>
+      </TouchableOpacity>
     </View>
   );
 };
