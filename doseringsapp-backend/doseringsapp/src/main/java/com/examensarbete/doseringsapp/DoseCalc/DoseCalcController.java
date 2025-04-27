@@ -17,8 +17,8 @@ public class DoseCalcController {
     }
 
     @PostMapping("/calculate")
-    public ResponseEntity<DoseCalcRequestDTO> calculateDosage(@RequestBody DoseCalcRequestDTO request) {
-        DoseCalcRequestDTO result = doseCalcService.calculateDosage(request);
+    public ResponseEntity<DoseCalcResponseDTO> calculateDosage(@RequestBody DoseCalcRequestDTO request) {
+        DoseCalcResponseDTO result = doseCalcService.calculateDosage(request);
         return ResponseEntity.ok(result);
     }
 }

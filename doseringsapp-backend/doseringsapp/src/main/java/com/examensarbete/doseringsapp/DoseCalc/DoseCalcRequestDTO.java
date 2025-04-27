@@ -1,5 +1,8 @@
 package com.examensarbete.doseringsapp.DoseCalc;
 
+import lombok.Data;
+
+@Data
 public class DoseCalcRequestDTO {
 
     Long medicineId;

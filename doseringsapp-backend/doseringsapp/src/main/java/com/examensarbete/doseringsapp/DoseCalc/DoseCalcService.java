@@ -1,5 +1,7 @@
 package com.examensarbete.doseringsapp.DoseCalc;
 
+import com.examensarbete.doseringsapp.Medicines.Medicine;
+import com.examensarbete.doseringsapp.Medicines.MedicineRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -7,15 +9,32 @@ import org.springframework.stereotype.Service;
 public class DoseCalcService {
 
     private final ModelMapper modelMapper;
+    private final MedicineRepository medicineRepository;
 
-    public DoseCalcService(ModelMapper modelMapper) {
+    public DoseCalcService(ModelMapper modelMapper, MedicineRepository medicineRepository) {
         this.modelMapper = modelMapper;
+        this.medicineRepository = medicineRepository;
     }
 
-    public DoseCalcRequestDTO calculateDosage(DoseCalcRequestDTO request) {
-        // Here you would implement the actual dosage calculation logic
-        // For now, we'll just return the request object as a placeholder
-        return modelMapper.map(request, DoseCalcRequestDTO.class);
+    public DoseCalcResponseDTO calculateDosage(DoseCalcRequestDTO request) {
+        // 1. Hämta medicinen från databasen
+        Medicine medicine = medicineRepository.findById(request.getMedicineId())
+                .orElseThrow(() -> new RuntimeException("Medicine not found"));
+
+        // 2. Enkel dosberäkning: dos = vikt * defaultDosePerKg
+        double calculatedDose = request.getWeight() * medicine.getDefaultDosePerKg();
+
+        // 3. Se till att dosen inte överstiger medicinens maxdos
+        if (medicine.getMaxDose() != null && calculatedDose > medicine.getMaxDose()) {
+            calculatedDose = medicine.getMaxDose();
+        }
+
+        // 4. Skapa och returnera ett response-objekt
+        return DoseCalcResponseDTO.builder()
+                .medicineName(medicine.getName())
+                .calculatedDose(calculatedDose)
+                .unit(medicine.getUnit())
+                .build();
     }
 
 }
