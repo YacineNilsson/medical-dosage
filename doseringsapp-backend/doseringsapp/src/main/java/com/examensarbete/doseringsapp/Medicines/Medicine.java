@@ -1,6 +1,8 @@
 package com.examensarbete.doseringsapp.Medicines;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +27,9 @@ public class Medicine {
     private String name; // Medicinens namn, t.ex. "Amoxicillin"
     private String type; // t.ex. "Antibiotic"
     private String form; // t.ex. "Tablet", "Syrup"
+
+    @Enumerated(EnumType.STRING)
+    private CalculationMethod calculationMethod;
 
     private String unit; // Enhet för dosering, t.ex. "mg", "ml"
     private Double defaultDosePerKg; // Standarddos per kg kroppsvikt (kan vara 10 mg/kg)

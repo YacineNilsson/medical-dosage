@@ -5,6 +5,7 @@ import com.examensarbete.doseringsapp.Medicines.MedicineRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class DoseCalcService {
 
@@ -17,11 +18,11 @@ public class DoseCalcService {
     }
 
     public DoseCalcResponseDTO calculateDosage(DoseCalcRequestDTO request) {
-        // 1. Hämta medicinen från databasen
+
         Medicine medicine = medicineRepository.findById(request.getMedicineId())
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
 
-        // 2. Enkel dosberäkning: dos = vikt * defaultDosePerKg
+        // dosberäkning: dos = vikt * defaultDosePerKg
         double calculatedDose = request.getWeight() * medicine.getDefaultDosePerKg();
 
         // 3. Se till att dosen inte överstiger medicinens maxdos
@@ -29,7 +30,6 @@ public class DoseCalcService {
             calculatedDose = medicine.getMaxDose();
         }
 
-        // 4. Skapa och returnera ett response-objekt
         return DoseCalcResponseDTO.builder()
                 .medicineName(medicine.getName())
                 .calculatedDose(calculatedDose)

@@ -23,7 +23,7 @@ public class MedicineController {
         return medicineRepository.findAll();
     }
 
-    @GetMapping
+    @GetMapping ("/{id}")
     public Medicine getMedicineById(Long id) {
         return medicineRepository.findById(id).orElse(null);
     }
