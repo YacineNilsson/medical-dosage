@@ -33,6 +33,7 @@ public class Medicine {
 
     private String unit; // Enhet för dosering, t.ex. "mg", "ml"
     private Double defaultDosePerKg; // Standarddos per kg kroppsvikt (kan vara 10 mg/kg)
+    private Double defaultDosePerM2; // Standarddos per m2 kroppsyta (kan vara 10 mg/m2)
     private Double maxDose; // Maximal dos (kan vara 500 mg)
 
     // Ev. metadata

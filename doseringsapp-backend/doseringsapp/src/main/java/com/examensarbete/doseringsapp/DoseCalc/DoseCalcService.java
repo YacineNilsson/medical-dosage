@@ -37,4 +37,27 @@ public class DoseCalcService {
                 .build();
     }
 
+    public DoseCalcResponseDTO calculateDosageBSA(DoseCalcRequestDTO request) {
+
+        Medicine medicine = medicineRepository.findById(request.getMedicineId())
+                .orElseThrow(() -> new RuntimeException("Medicine not found"));
+
+        // BSA beräkning: BSA = sqrt((vikt * längd) / 3600)
+        double bsa = Math.sqrt((request.getWeight() * request.getHeight()) / 3600);
+
+        // dosberäkning: dos = BSA * defaultDosePerKg
+        double calculatedDose = bsa * medicine.getDefaultDosePerM2();
+
+        // 3. Se till att dosen inte överstiger medicinens maxdos
+        if (medicine.getMaxDose() != null && calculatedDose > medicine.getMaxDose()) {
+            calculatedDose = medicine.getMaxDose();
+        }
+
+        return DoseCalcResponseDTO.builder()
+                .medicineName(medicine.getName())
+                .calculatedDose(calculatedDose)
+                .unit(medicine.getUnit())
+                .build();
+    }
+
 }
