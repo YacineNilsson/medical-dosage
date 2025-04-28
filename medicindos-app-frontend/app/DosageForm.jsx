@@ -1,40 +1,48 @@
 import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
   TextInput,
-  Button,
-  Picker,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 
 const DosageForm = () => {
   const styles = StyleSheet.create({
-    textInput: {
+    container: {
+      padding: 20,
+      flex: 1,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginVertical: 10,
+    },
+    inputField: {
       borderWidth: 1,
-      borderColor: "#ccc",
+      borderColor: "#ddd",
       borderRadius: 8,
       padding: 10,
-      marginBottom: 15,
-      fontSize: 16,
+      marginBottom: 10,
+      backgroundColor: "#fff",
     },
-    label: {
-      fontSize: 16,
-      marginBottom: 5,
-      fontWeight: "bold",
+    picker: {
+      borderWidth: 1,
+      borderColor: "#ddd",
+      borderRadius: 8,
+      marginBottom: 10,
     },
     button: {
-      backgroundColor: "#4CAF50",
-      padding: 12,
+      backgroundColor: "#015551",
+      padding: 15,
       borderRadius: 8,
       alignItems: "center",
-      marginTop: 20,
+      justifyContent: "center",
     },
     buttonText: {
-      color: "white",
-      fontSize: 16,
-      fontWeight: "bold",
+      color: "#fff",
+      fontSize: 18,
     },
   });
 
@@ -51,10 +59,11 @@ const DosageForm = () => {
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={styles.label}>Välj medicin:</Text>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Välj medicin</Text>
       <Picker
         selectedValue={medicine}
+        style={styles.picker}
         onValueChange={(itemValue) => setMedicine(itemValue)}
       >
         <Picker.Item label="Välj medicin..." value="" />
@@ -63,33 +72,35 @@ const DosageForm = () => {
         {/* Lägg till fler mediciner */}
       </Picker>
 
-      <Text style={styles.label}>Skriv in vikt (kg):</Text>
+      <Text style={styles.sectionTitle}>Fyll i information</Text>
+      <Text>Skriv in vikt (kg):</Text>
       <TextInput
         keyboardType="numeric"
         value={weight}
         onChangeText={setWeight}
-        style={styles.textInput}
+        style={styles.inputField}
       />
 
-      <Text style={styles.label}>Skriv in längd (cm):</Text>
+      <Text>Skriv in längd (cm):</Text>
       <TextInput
         keyboardType="numeric"
         value={height}
         onChangeText={setHeight}
-        style={styles.textInput}
+        style={styles.inputField}
       />
 
-      <Text style={styles.label}>Skriv in ålder (år):</Text>
+      <Text>Skriv in ålder (år):</Text>
       <TextInput
         keyboardType="numeric"
         value={age}
         onChangeText={setAge}
-        style={styles.textInput}
+        style={styles.inputField}
       />
 
-      <Text style={styles.label}>Välj kön:</Text>
+      <Text style={styles.sectionTitle}>Välj kön</Text>
       <Picker
         selectedValue={gender}
+        style={styles.picker}
         onValueChange={(itemValue) => setGender(itemValue)}
       >
         <Picker.Item label="Välj kön..." value="" />

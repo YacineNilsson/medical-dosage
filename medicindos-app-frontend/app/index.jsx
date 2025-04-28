@@ -6,13 +6,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FDFBEE",
   },
 });
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Edit app/index.tsx to edit this screen.</Text>
       <DosageForm />
     </View>
   );
