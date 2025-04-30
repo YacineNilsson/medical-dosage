@@ -21,7 +21,7 @@ const DosageForm = () => {
     },
     inputField: {
       borderWidth: 1,
-      borderColor: "#ddd",
+      borderColor: "#57B4BA",
       borderRadius: 8,
       padding: 10,
       marginBottom: 10,
@@ -29,7 +29,7 @@ const DosageForm = () => {
     },
     picker: {
       borderWidth: 1,
-      borderColor: "#ddd",
+      borderColor: "#57B4BA",
       borderRadius: 8,
       marginBottom: 10,
     },
@@ -53,9 +53,7 @@ const DosageForm = () => {
   const [height, setHeight] = useState("");
 
   const handleSubmit = () => {
-    //skickar du datan till backend. Ska endpoint och service för kalkylering
-    console.log({ medicine, weight, height, age, gender });
-    console.log("bara ett test");
+    console.log(medicine, weight, age, gender, height);
   };
 
   return (
