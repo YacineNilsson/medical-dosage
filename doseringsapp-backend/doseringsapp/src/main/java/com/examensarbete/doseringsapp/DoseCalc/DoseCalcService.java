@@ -17,46 +17,52 @@ public class DoseCalcService {
         this.medicineRepository = medicineRepository;
     }
 
-    public DoseCalcResponseDTO calculateDosage(DoseCalcRequestDTO request) {
+    public DoseCalcResponseDTO calculateDose(DoseCalcRequestDTO request) {
+        String name;
+        String unit;
+        double dosePerKg = 0;
+        double dosePerM2 = 0;
+        Double maxDose = null;
 
-        Medicine medicine = medicineRepository.findById(request.getMedicineId())
-                .orElseThrow(() -> new RuntimeException("Medicine not found"));
+        if (request.isUseCustomValues()) {
+            name = request.getMedicineName();
+            unit = request.getUnit();
+            dosePerKg = request.getNormalDosePerKgPerDay() != null ? request.getNormalDosePerKgPerDay() : 0;
+            dosePerM2 = request.getNormalDosePerM2PerDay() != null ? request.getNormalDosePerM2PerDay() : 0;
+            maxDose = request.getMaxDose();
+        } else {
+            Medicine medicine = medicineRepository.findById(request.getMedicineId())
+                    .orElseThrow(() -> new RuntimeException("Medicine not found"));
 
-        // dosberäkning: dos = vikt * defaultDosePerKg
-        double calculatedDose = request.getWeight() * medicine.getDefaultDosePerKg();
+            name = medicine.getName();
+            unit = medicine.getUnit();
+            dosePerKg = medicine.getDefaultDosePerKgPerDay();
+            dosePerM2 = medicine.getNormalDosePerM2PerDay();
+            maxDose = medicine.getMaxDose();
+        }
 
-        // 3. Se till att dosen inte överstiger medicinens maxdos
-        if (medicine.getMaxDose() != null && calculatedDose > medicine.getMaxDose()) {
-            calculatedDose = medicine.getMaxDose();
+        double calculatedDose;
+
+        switch (request.getCalculationMethod().toLowerCase()) {
+            case "weight":
+                calculatedDose = request.getWeight() * dosePerKg;
+                break;
+            case "bsa":
+                double bsa = Math.sqrt((request.getWeight() * request.getHeight()) / 3600);
+                calculatedDose = bsa * dosePerM2;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid calculation method: " + request.getCalculationMethod());
+        }
+
+        if (maxDose != null && calculatedDose > maxDose) {
+            calculatedDose = maxDose;
         }
 
         return DoseCalcResponseDTO.builder()
-                .medicineName(medicine.getName())
+                .medicineName(name)
                 .calculatedDose(calculatedDose)
-                .unit(medicine.getUnit())
-                .build();
-    }
-
-    public DoseCalcResponseDTO calculateDosageBSA(DoseCalcRequestDTO request) {
-
-        Medicine medicine = medicineRepository.findById(request.getMedicineId())
-                .orElseThrow(() -> new RuntimeException("Medicine not found"));
-
-        // BSA beräkning: BSA = sqrt((vikt * längd) / 3600)
-        double bsa = Math.sqrt((request.getWeight() * request.getHeight()) / 3600);
-
-        // dosberäkning: dos = BSA * defaultDosePerKg
-        double calculatedDose = bsa * medicine.getDefaultDosePerM2();
-
-        // 3. Se till att dosen inte överstiger medicinens maxdos
-        if (medicine.getMaxDose() != null && calculatedDose > medicine.getMaxDose()) {
-            calculatedDose = medicine.getMaxDose();
-        }
-
-        return DoseCalcResponseDTO.builder()
-                .medicineName(medicine.getName())
-                .calculatedDose(calculatedDose)
-                .unit(medicine.getUnit())
+                .unit(unit)
                 .build();
     }
 
