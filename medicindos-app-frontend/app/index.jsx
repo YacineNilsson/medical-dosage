@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
-import DosageForm from "./DosageForm";
+import DosageForm from "./Components/DosageForm";
+import DosageScreen from "./Components/DosageScreen";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <DosageForm />
+      <DosageScreen />
     </View>
   );
 };
