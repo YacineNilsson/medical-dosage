@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
+import { useDoseCalculation } from "../Hooks/useDoseCalculation";
 
 const CustomDoseForm = () => {
   const styles = StyleSheet.create({
@@ -51,28 +52,55 @@ const CustomDoseForm = () => {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
+  const [calculationMethod, setCalculationMethod] = useState("");
+
+  const { result, loading, error, calculateDose } = useDoseCalculation();
 
   const handleSubmit = () => {
-    console.log(medicine, weight, age, gender, height);
+    const requestData = {
+      useCustomValues: true,
+      weight: parseFloat(weight),
+      height: parseFloat(height),
+      calculationMethod: medicine === "Viktbaserad" ? "weight" : "bsa",
+      medicineName: medicine, // t.ex. "Amoxicillin" eller "BSA - Mosteller"
+      unit: "mg", // detta kan du göra valbart om du vill
+      normalDosePerKgPerDay: medicine === "Viktbaserad" ? 50 : null,
+      normalDosePerM2PerDay: medicine !== "Viktbaserad" ? 800 : null,
+      maxDose: 3000, // valfritt, justera efter behov
+    };
+
+    calculateDose(requestData);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Välj beräkningsmetod</Text>
       <Picker
-        selectedValue={medicine}
+        selectedValue={calculationMethod}
         style={styles.picker}
-        onValueChange={(itemValue) => setMedicine(itemValue)}
+        onValueChange={(itemValue) => {
+          setCalculationMethod(itemValue);
+          setMedicine(
+            itemValue === "weight-based" ? "Viktbaserad" : "BSA - Mosteller"
+          );
+        }}
       >
         <Picker.Item label="Välj metod..." value="" />
-        <Picker.Item label="Viktbaserad" value="Viktbaserad" />
-        <Picker.Item label="BSA - Mosteller" value="BSA - Mosteller" />
-        <Picker.Item label="BSA - Du Bois" value="BSA - Du Bois" />
-        {/* Lägg till fler mediciner */}
+        <Picker.Item label="Viktbaserad" value="weight-based" />
+        <Picker.Item label="BSA - Mosteller" value="bsa" />
+        <Picker.Item label="BSA - Du Bois" value="bsa" />
       </Picker>
 
       <Text style={styles.sectionTitle}>Fyll i information</Text>
-      <Text>Skriv in vikt (kg):</Text>
+
+      <Text>Medicinens namn:</Text>
+      <TextInput
+        value={medicine}
+        onChangeText={setMedicine}
+        style={styles.inputField}
+      />
+
+      <Text>Vikt (kg):</Text>
       <TextInput
         keyboardType="numeric"
         value={weight}
@@ -80,7 +108,7 @@ const CustomDoseForm = () => {
         style={styles.inputField}
       />
 
-      <Text>Skriv in längd (cm):</Text>
+      <Text>Längd (cm):</Text>
       <TextInput
         keyboardType="numeric"
         value={height}
@@ -88,7 +116,7 @@ const CustomDoseForm = () => {
         style={styles.inputField}
       />
 
-      <Text>Skriv in ålder (år):</Text>
+      <Text>Ålder (år):</Text>
       <TextInput
         keyboardType="numeric"
         value={age}
@@ -108,8 +136,28 @@ const CustomDoseForm = () => {
       </Picker>
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Beräkna dos</Text>
+        <Text style={styles.buttonText}>
+          {loading ? "Beräknar..." : "Beräkna dos"}
+        </Text>
       </TouchableOpacity>
+
+      {/* Visa felmeddelande om något går fel */}
+      {error && (
+        <Text style={{ color: "red", marginTop: 10 }}>Fel: {error}</Text>
+      )}
+
+      {/* Visa resultat om det finns */}
+      {result && (
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.sectionTitle}>Resultat</Text>
+          <Text>Total dos per dag: {result.totalDosePerDay} mg</Text>
+          <Text>Antal doser per dag: {result.dosesPerDay}</Text>
+          <Text>Enkel dos: {result.singleDose} mg</Text>
+          <Text>
+            Eventuell maxdos: {result.maxDoseExceeded ? "Överskriden" : "OK"}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
