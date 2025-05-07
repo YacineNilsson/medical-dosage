@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -53,6 +54,9 @@ const CustomDoseForm = () => {
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [calculationMethod, setCalculationMethod] = useState("");
+  const [defaultDosePerKgPerDay, setDefaultDosePerKgPerDay] = useState("");
+  const [defaultDosePerM2PerDay, setDefaultDosePerM2PerDay] = useState("");
+  const [maxDose, setMaxDose] = useState("");
 
   const { result, loading, error, calculateDose } = useDoseCalculation();
 
@@ -61,37 +65,55 @@ const CustomDoseForm = () => {
       useCustomValues: true,
       weight: parseFloat(weight),
       height: parseFloat(height),
-      calculationMethod: medicine === "Viktbaserad" ? "weight" : "bsa",
-      medicineName: medicine, // t.ex. "Amoxicillin" eller "BSA - Mosteller"
+      calculationMethod,
+      defaultDosePerKgPerDay: parseFloat(defaultDosePerKgPerDay) || null,
+      defaultDosePerM2PerDay: parseFloat(defaultDosePerM2PerDay) || null,
+      maxDose: parseFloat(maxDose) || null,
+      medicineName: medicine,
       unit: "mg", // detta kan du göra valbart om du vill
-      normalDosePerKgPerDay: medicine === "Viktbaserad" ? 50 : null,
-      normalDosePerM2PerDay: medicine !== "Viktbaserad" ? 800 : null,
-      maxDose: 3000, // valfritt, justera efter behov
     };
 
     calculateDose(requestData);
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.sectionTitle}>Välj beräkningsmetod</Text>
       <Picker
         selectedValue={calculationMethod}
         style={styles.picker}
         onValueChange={(itemValue) => {
           setCalculationMethod(itemValue);
-          setMedicine(
-            itemValue === "weight-based" ? "Viktbaserad" : "BSA - Mosteller"
-          );
         }}
       >
         <Picker.Item label="Välj metod..." value="" />
-        <Picker.Item label="Viktbaserad" value="weight-based" />
+        <Picker.Item label="Viktbaserad" value="weight" />
         <Picker.Item label="BSA - Mosteller" value="bsa" />
         <Picker.Item label="BSA - Du Bois" value="bsa" />
       </Picker>
 
       <Text style={styles.sectionTitle}>Fyll i information</Text>
+
+      <Text>Normaldos per kg/dag</Text>
+      <TextInput
+        value={defaultDosePerKgPerDay}
+        onChangeText={setDefaultDosePerKgPerDay}
+        style={styles.inputField}
+      />
+
+      <Text>Normaldos per m2/dag</Text>
+      <TextInput
+        value={defaultDosePerM2PerDay}
+        onChangeText={setDefaultDosePerM2PerDay}
+        style={styles.inputField}
+      />
+
+      <Text>Maxdos per dag</Text>
+      <TextInput
+        value={maxDose}
+        onChangeText={setMaxDose}
+        style={styles.inputField}
+      />
 
       <Text>Medicinens namn:</Text>
       <TextInput
@@ -150,15 +172,13 @@ const CustomDoseForm = () => {
       {result && (
         <View style={{ marginTop: 20 }}>
           <Text style={styles.sectionTitle}>Resultat</Text>
-          <Text>Total dos per dag: {result.totalDosePerDay} mg</Text>
-          <Text>Antal doser per dag: {result.dosesPerDay}</Text>
-          <Text>Enkel dos: {result.singleDose} mg</Text>
           <Text>
-            Eventuell maxdos: {result.maxDoseExceeded ? "Överskriden" : "OK"}
+            Rekommenderad dos för {result.medicineName}: {result.calculatedDose}{" "}
+            {result.unit}
           </Text>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
