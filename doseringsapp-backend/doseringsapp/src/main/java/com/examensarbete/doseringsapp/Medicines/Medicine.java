@@ -38,7 +38,7 @@ public class Medicine {
     private Double lowDosePerKgPerDay; // Lägstados per kg kroppsvikt (kan vara 10 mg/kg)
     private Double highDosePerKgPerDay; // Högstados per kg kroppsvikt (kan vara 10 mg/kg)
 
-    private Double normalDosePerM2PerDay; // Standarddos per m2 kroppsyta (kan vara 10 mg/m2)
+    private Double defaultDosePerM2PerDay; // Standarddos per m2 kroppsyta (kan vara 10 mg/m2)
     private Double lowDosePerM2PerDay; // Lägstados per m2 kroppsyta (kan vara 10 mg/m2)
     private Double highDosePerM2PerDay; // Högstados per m2 kroppsyta (kan vara 10 mg/m2)
 

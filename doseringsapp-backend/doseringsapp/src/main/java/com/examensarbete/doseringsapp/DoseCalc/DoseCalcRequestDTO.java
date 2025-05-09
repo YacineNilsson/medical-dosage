@@ -15,8 +15,8 @@ public class DoseCalcRequestDTO {
     // Används om useCustomValues = true
     private String medicineName;
     private String unit;
-    private Double normalDosePerKgPerDay;
-    private Double normalDosePerM2PerDay;
+    private Double defaultDosePerKgPerDay;
+    private Double defaultDosePerM2PerDay;
     private Double maxDose;
 
 

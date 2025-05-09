@@ -20,10 +20,11 @@ public class DataSeeder implements CommandLineRunner {
                     .type("Antibiotic")
                     .form("Tablet")
                     .unit("mg")
-                    .normalDosePerKgPerDay(20.0)
+                    .defaultDosePerKgPerDay(20.0)
                     .highDosePerKgPerDay(40.0)
                     .lowDosePerKgPerDay(10.0)
                     .maxDose(500.0)
+                    .calculationMethod(CalculationMethod.weight)
                     .description("Used for bacterial infections.")
                     .build());
 
@@ -32,10 +33,11 @@ public class DataSeeder implements CommandLineRunner {
                     .type("Antibiotic")
                     .form("Injection")
                     .unit("mg")
-                    .normalDosePerKgPerDay(50.0)
+                    .defaultDosePerKgPerDay(50.0)
                     .highDosePerKgPerDay(100.0)
                     .lowDosePerKgPerDay(25.0)
                     .maxDose(2000.0)
+                    .calculationMethod(CalculationMethod.weight)
                     .description("Used for serious bacterial infections.")
                     .build());
             
