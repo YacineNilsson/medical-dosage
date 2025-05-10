@@ -1,9 +1,12 @@
 package com.examensarbete.doseringsapp.Patients;
 
+import com.examensarbete.doseringsapp.Users.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +31,8 @@ public class Patient {
     private String gender;
     private String notes; // För anteckningar
 
-    // getters och setters
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
 
