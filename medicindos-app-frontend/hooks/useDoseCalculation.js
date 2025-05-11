@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext'; // Justera sökvägen vid behov
 
 export function useDoseCalculation() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { userToken } = useAuth(); // Hämta JWT-token från AuthContext
 
   async function calculateDose(requestData) {
     setLoading(true);
@@ -14,6 +16,7 @@ export function useDoseCalculation() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`, // Skicka med token
         },
         body: JSON.stringify(requestData),
       });

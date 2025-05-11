@@ -1,16 +1,17 @@
+import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
-import { useDoseCalculation } from "../Hooks/useDoseCalculation";
+import { useMedicines } from "../hooks/useMedicines";
 
-const CustomDoseForm = () => {
+import { useDoseCalculation } from "../hooks/useDoseCalculation";
+
+const DosageForm = () => {
   const styles = StyleSheet.create({
     container: {
       padding: 20,
@@ -53,76 +54,44 @@ const CustomDoseForm = () => {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
-  const [calculationMethod, setCalculationMethod] = useState("");
-  const [defaultDosePerKgPerDay, setDefaultDosePerKgPerDay] = useState("");
-  const [defaultDosePerM2PerDay, setDefaultDosePerM2PerDay] = useState("");
-  const [maxDose, setMaxDose] = useState("");
+
+  const {
+    medicines,
+    loading: loadingMedicines,
+    error: errorMedicines,
+  } = useMedicines();
 
   const { result, loading, error, calculateDose } = useDoseCalculation();
 
   const handleSubmit = () => {
     const requestData = {
-      useCustomValues: true,
+      useCustomValues: false,
+      medicineId: medicine,
       weight: parseFloat(weight),
       height: parseFloat(height),
-      calculationMethod,
-      defaultDosePerKgPerDay: parseFloat(defaultDosePerKgPerDay) || null,
-      defaultDosePerM2PerDay: parseFloat(defaultDosePerM2PerDay) || null,
-      maxDose: parseFloat(maxDose) || null,
-      medicineName: medicine,
-      unit: "mg", // detta kan du göra valbart om du vill
+      age: parseInt(age),
+      gender,
     };
 
     calculateDose(requestData);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.sectionTitle}>Välj beräkningsmetod</Text>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Välj medicin</Text>
       <Picker
-        selectedValue={calculationMethod}
+        selectedValue={medicine}
         style={styles.picker}
-        onValueChange={(itemValue) => {
-          setCalculationMethod(itemValue);
-        }}
+        onValueChange={(itemValue) => setMedicine(itemValue)}
       >
-        <Picker.Item label="Välj metod..." value="" />
-        <Picker.Item label="Viktbaserad" value="weight" />
-        <Picker.Item label="BSA - Mosteller" value="bsa" />
-        <Picker.Item label="BSA - Du Bois" value="bsa" />
+        <Picker.Item label="Välj medicin..." value="" />
+        {medicines.map((med) => (
+          <Picker.Item key={med.id} label={med.name} value={med.id} />
+        ))}
       </Picker>
 
       <Text style={styles.sectionTitle}>Fyll i information</Text>
-
-      <Text>Normaldos per kg/dag</Text>
-      <TextInput
-        value={defaultDosePerKgPerDay}
-        onChangeText={setDefaultDosePerKgPerDay}
-        style={styles.inputField}
-      />
-
-      <Text>Normaldos per m2/dag</Text>
-      <TextInput
-        value={defaultDosePerM2PerDay}
-        onChangeText={setDefaultDosePerM2PerDay}
-        style={styles.inputField}
-      />
-
-      <Text>Maxdos per dag</Text>
-      <TextInput
-        value={maxDose}
-        onChangeText={setMaxDose}
-        style={styles.inputField}
-      />
-
-      <Text>Medicinens namn:</Text>
-      <TextInput
-        value={medicine}
-        onChangeText={setMedicine}
-        style={styles.inputField}
-      />
-
-      <Text>Vikt (kg):</Text>
+      <Text>Skriv in vikt (kg):</Text>
       <TextInput
         keyboardType="numeric"
         value={weight}
@@ -130,7 +99,7 @@ const CustomDoseForm = () => {
         style={styles.inputField}
       />
 
-      <Text>Längd (cm):</Text>
+      <Text>Skriv in längd (cm):</Text>
       <TextInput
         keyboardType="numeric"
         value={height}
@@ -138,7 +107,7 @@ const CustomDoseForm = () => {
         style={styles.inputField}
       />
 
-      <Text>Ålder (år):</Text>
+      <Text>Skriv in ålder (år):</Text>
       <TextInput
         keyboardType="numeric"
         value={age}
@@ -158,9 +127,7 @@ const CustomDoseForm = () => {
       </Picker>
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>
-          {loading ? "Beräknar..." : "Beräkna dos"}
-        </Text>
+        <Text style={styles.buttonText}>Beräkna dos</Text>
       </TouchableOpacity>
 
       {/* Visa felmeddelande om något går fel */}
@@ -178,8 +145,8 @@ const CustomDoseForm = () => {
           </Text>
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
-export default CustomDoseForm;
+export default DosageForm;

@@ -1,6 +1,6 @@
-import { Text, View, StyleSheet } from "react-native";
-import DosageForm from "./Components/DosageForm";
-import DosageScreen from "./Components/DosageScreen";
+import { StyleSheet } from "react-native";
+import { useAuth } from "../context/AuthContext";
+import { Redirect } from "expo-router";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,11 +12,12 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = () => {
-  return (
-    <View style={styles.container}>
-      <DosageScreen />
-    </View>
-  );
+  const { userToken } = useAuth();
+
+  if (userToken) {
+    return <Redirect href="/DosageView" />;
+  }
+  return <Redirect href="/login" />;
 };
 
 export default HomeScreen;
