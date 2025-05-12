@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { Redirect } from "expo-router";
 
@@ -12,11 +12,22 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = () => {
-  const { userToken } = useAuth();
+  const { userToken, isLoading } = useAuth();
 
-  if (userToken) {
-    return <Redirect href="/DosageView" />;
+  // Visa en loader medan tokenstatus laddas
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#015551" />
+      </View>
+    );
   }
+
+  // Redirecta baserat på om användaren är inloggad
+  if (userToken) {
+    return <Redirect href="/options" />;
+  }
+
   return <Redirect href="/login" />;
 };
 

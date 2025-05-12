@@ -94,20 +94,6 @@ const CustomDoseForm = () => {
 
       <Text style={styles.sectionTitle}>Fyll i information</Text>
 
-      <Text>Normaldos per kg/dag</Text>
-      <TextInput
-        value={defaultDosePerKgPerDay}
-        onChangeText={setDefaultDosePerKgPerDay}
-        style={styles.inputField}
-      />
-
-      <Text>Normaldos per m2/dag</Text>
-      <TextInput
-        value={defaultDosePerM2PerDay}
-        onChangeText={setDefaultDosePerM2PerDay}
-        style={styles.inputField}
-      />
-
       <Text>Maxdos per dag</Text>
       <TextInput
         value={maxDose}
@@ -115,26 +101,42 @@ const CustomDoseForm = () => {
         style={styles.inputField}
       />
 
-      <Text>Medicinens namn:</Text>
-      <TextInput
-        value={medicine}
-        onChangeText={setMedicine}
-        style={styles.inputField}
-      />
+      {/* Normaldos per kg – visas bara vid viktbaserad metod */}
+      {calculationMethod === "weight" && (
+        <>
+          <Text>Normaldos per kg/dag</Text>
+          <TextInput
+            value={defaultDosePerKgPerDay}
+            onChangeText={setDefaultDosePerKgPerDay}
+            style={styles.inputField}
+          />
+        </>
+      )}
+
+      {/* Normaldos per m2 – visas bara vid BSA */}
+      {calculationMethod === "bsa" && (
+        <>
+          <Text>Normaldos per m2/dag</Text>
+          <TextInput
+            value={defaultDosePerM2PerDay}
+            onChangeText={setDefaultDosePerM2PerDay}
+            style={styles.inputField}
+          />
+          <Text>Längd (cm):</Text>
+          <TextInput
+            keyboardType="numeric"
+            value={height}
+            onChangeText={setHeight}
+            style={styles.inputField}
+          />
+        </>
+      )}
 
       <Text>Vikt (kg):</Text>
       <TextInput
         keyboardType="numeric"
         value={weight}
         onChangeText={setWeight}
-        style={styles.inputField}
-      />
-
-      <Text>Längd (cm):</Text>
-      <TextInput
-        keyboardType="numeric"
-        value={height}
-        onChangeText={setHeight}
         style={styles.inputField}
       />
 
@@ -173,7 +175,7 @@ const CustomDoseForm = () => {
         <View style={{ marginTop: 20 }}>
           <Text style={styles.sectionTitle}>Resultat</Text>
           <Text>
-            Rekommenderad dos för {result.medicineName}: {result.calculatedDose}{" "}
+            Rekommenderad dos för medicinen: {result.calculatedDose}{" "}
             {result.unit}
           </Text>
         </View>

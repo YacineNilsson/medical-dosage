@@ -1,11 +1,11 @@
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import DosageScreen from "../components/DosageScreen";
 
 const DosageView = () => {
   return (
-    <View>
+    <ScrollView>
       <DosageScreen />
-    </View>
+    </ScrollView>
   );
 };
 
